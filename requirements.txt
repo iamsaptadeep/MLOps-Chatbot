@@ -1,0 +1,11 @@
+pandas
+scikit-learn
+sentence-transformers
+mlflow
+dvc
+fastapi
+uvicorn
+streamlit
+evidently
+joblib
+datasets
