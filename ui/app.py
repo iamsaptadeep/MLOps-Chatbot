@@ -1,15 +1,19 @@
 import streamlit as st
 import requests
 import time
+import os
 
 
 # -------------------------------------------------
 # Configuration
 # -------------------------------------------------
 
-# IMPORTANT: Replace with your real API URL + endpoint
-API_URL = "https://mlops-chatbot.onrender.com/chat"
+# Get API URL from environment variable or use default
+API_URL = os.getenv("API_URL", "http://localhost:8000")
 
+# Ensure URL ends with /chat
+if not API_URL.endswith("/chat"):
+    API_URL = f"{API_URL}/chat"
 
 APP_TITLE = "Customer Support AI Platform"
 APP_SUBTITLE = "Automated Assistance System"
@@ -107,15 +111,18 @@ with st.sidebar:
     st.markdown("### System Status")
 
     try:
-        r = requests.get(API_URL, timeout=3)
+        # Check health endpoint (root path)
+        health_url = API_URL.replace("/chat", "")
+        r = requests.get(health_url, timeout=5)
 
         if r.status_code == 200:
-            st.success("API Service: Online")
+            st.success("✅ API Service: Online")
         else:
-            st.warning("API Service: Unstable")
+            st.warning("⚠️ API Service: Unstable")
 
-    except Exception:
-        st.error("API Service: Offline")
+    except Exception as e:
+        st.error("❌ API Service: Offline")
+        st.caption(f"Error: {str(e)}")
 
 
 # -------------------------------------------------
@@ -162,7 +169,7 @@ def query_api(user_text):
         response = requests.post(
             API_URL,
             json=payload,
-            timeout=20
+            timeout=30
         )
 
         response.raise_for_status()
@@ -171,19 +178,19 @@ def query_api(user_text):
 
 
     except requests.exceptions.Timeout:
-        return None, "Request timeout. Please try again."
+        return None, "⏱️ Request timeout. Please try again."
 
 
     except requests.exceptions.ConnectionError:
-        return None, "Unable to connect to backend service."
+        return None, f"🔌 Unable to connect to backend service at {API_URL}"
 
 
     except requests.exceptions.HTTPError as e:
-        return None, f"Server error: {e}"
+        return None, f"⚠️ Server error: {e}"
 
 
     except Exception as e:
-        return None, f"Unexpected error: {e}"
+        return None, f"❌ Unexpected error: {e}"
 
 
 # -------------------------------------------------
@@ -269,3 +276,4 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+

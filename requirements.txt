@@ -7,7 +7,7 @@ scipy==1.13.0
 joblib==1.4.2
 
 # ML - Updated for Python 3.11 compatibility
-scikit-learn==1.8.0
+scikit-learn==1.5.2
 sentence-transformers==3.3.1
 transformers==4.46.0
 
@@ -15,6 +15,7 @@ transformers==4.46.0
 fastapi==0.110.0
 uvicorn==0.29.0
 streamlit==1.32.0
+requests==2.31.0
 
 # MLOps
 mlflow==2.11.3
@@ -24,4 +25,5 @@ fsspec==2024.2.0
 datasets==2.19.0
 evidently==0.4.16
 dvc==3.48.4
-scipy==1.11.4
+
+
