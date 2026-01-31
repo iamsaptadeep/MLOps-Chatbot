@@ -6,7 +6,8 @@ import time
 # -------------------------------------------------
 # Configuration
 # -------------------------------------------------
-API_URL = "http://api:8000/chat"   # Docker service name
+API_URL = "https://mlops-chatbot.onrender.com/"
+   # Docker service name
 # For local testing (uncomment if needed)
 # API_URL = "http://127.0.0.1:8000/chat"
 
