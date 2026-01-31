@@ -6,10 +6,10 @@ import time
 # -------------------------------------------------
 # Configuration
 # -------------------------------------------------
-API_URL = "https://mlops-chatbot.onrender.com/"
-   # Docker service name
-# For local testing (uncomment if needed)
-# API_URL = "http://127.0.0.1:8000/chat"
+
+# IMPORTANT: Replace with your real API URL + endpoint
+API_URL = "https://mlops-chatbot.onrender.com/chat"
+
 
 APP_TITLE = "Customer Support AI Platform"
 APP_SUBTITLE = "Automated Assistance System"
@@ -85,7 +85,7 @@ with st.sidebar:
         **Application:** Customer Support AI Platform  
         **Backend:** FastAPI  
         **Model:** Sentence Transformer + Classifier  
-        **Deployment:** Docker Compose  
+        **Deployment:** Render Cloud  
         **Monitoring:** MLflow + Evidently
         """
     )
@@ -107,7 +107,7 @@ with st.sidebar:
     st.markdown("### System Status")
 
     try:
-        r = requests.get("http://api:8000", timeout=3)
+        r = requests.get(API_URL, timeout=3)
 
         if r.status_code == 200:
             st.success("API Service: Online")
@@ -121,8 +121,15 @@ with st.sidebar:
 # -------------------------------------------------
 # Header
 # -------------------------------------------------
-st.markdown('<div class="main-header">Customer Support AI Platform</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-header">Automated Assistance System</div>', unsafe_allow_html=True)
+st.markdown(
+    f'<div class="main-header">{APP_TITLE}</div>',
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    f'<div class="sub-header">{APP_SUBTITLE}</div>',
+    unsafe_allow_html=True
+)
 
 
 # -------------------------------------------------
@@ -138,8 +145,7 @@ if "messages" not in st.session_state:
 for msg in st.session_state.messages:
 
     with st.chat_message(msg["role"]):
-
-        st.markdown(msg["content"])
+        st.markdown(msg["content"], unsafe_allow_html=True)
 
 
 # -------------------------------------------------
@@ -156,27 +162,27 @@ def query_api(user_text):
         response = requests.post(
             API_URL,
             json=payload,
-            timeout=15
+            timeout=20
         )
 
         response.raise_for_status()
 
         return response.json(), None
 
-    except requests.exceptions.Timeout:
 
+    except requests.exceptions.Timeout:
         return None, "Request timeout. Please try again."
 
-    except requests.exceptions.ConnectionError:
 
+    except requests.exceptions.ConnectionError:
         return None, "Unable to connect to backend service."
 
-    except requests.exceptions.HTTPError as e:
 
+    except requests.exceptions.HTTPError as e:
         return None, f"Server error: {e}"
 
-    except Exception as e:
 
+    except Exception as e:
         return None, f"Unexpected error: {e}"
 
 
@@ -191,7 +197,7 @@ user_input = st.chat_input("Enter your message")
 # -------------------------------------------------
 if user_input:
 
-    # Display user message
+    # Save user message
     st.session_state.messages.append({
         "role": "user",
         "content": user_input
@@ -230,7 +236,9 @@ if user_input:
         confidence = result.get("confidence", 0.0)
 
         assistant_text = f"""
-        **Detected Intent:** {intent}
+        <b>Detected Intent:</b> {intent}
+
+        <br><br>
 
         {response}
 
@@ -261,5 +269,3 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
-
