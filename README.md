@@ -430,7 +430,3 @@ streamlit run ui/app.py
 ## Author
 
 Developed as a hands-on MLOps portfolio project focused on building production-grade machine learning systems.
-
-````
-
----
